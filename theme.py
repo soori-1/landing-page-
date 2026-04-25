@@ -34,18 +34,16 @@ def apply_theme():
     }}
 
     /* ============================================================
-       SIDEBAR TOGGLE BUTTON — make it large, gold, and unmissable
+       SIDEBAR TOGGLE — only the LEFT-side collapse/expand button.
+       The selectors below specifically target the sidebar control,
+       NOT the deploy/star/share/GitHub buttons on the right side.
        ============================================================ */
     [data-testid="collapsedControl"],
-    [data-testid="stSidebarCollapseButton"],
-    button[kind="header"] {{
+    [data-testid="stSidebarCollapseButton"] {{
         background: {RH_GOLD} !important;
-        color: {RH_BG} !important;
         border: 2px solid {RH_GOLD_LIGHT} !important;
         border-radius: 0 !important;
-        padding: 8px 14px !important;
-        min-width: 48px !important;
-        height: 40px !important;
+        padding: 6px 10px !important;
         z-index: 999999 !important;
         box-shadow: 0 0 12px rgba(184,136,26,0.5) !important;
         animation: rh-pulse 2s ease-in-out infinite !important;
@@ -56,21 +54,19 @@ def apply_theme():
         50%      {{ box-shadow: 0 0 20px rgba(184,136,26,0.9); }}
     }}
 
-    /* HIDE the broken Material Icons text labels ("keyboard_double_…") */
+    /* Hide broken Material Icons text inside ONLY these specific buttons */
     [data-testid="collapsedControl"] *,
-    [data-testid="stSidebarCollapseButton"] *,
-    button[kind="header"] * {{
+    [data-testid="stSidebarCollapseButton"] * {{
         font-size: 0 !important;
         color: transparent !important;
     }}
 
-    /* Replace with a clean ASCII chevron — black on gold so it pops */
+    /* Replace with a clean label */
     [data-testid="collapsedControl"]::after,
-    [data-testid="stSidebarCollapseButton"]::after,
-    button[kind="header"]::after {{
+    [data-testid="stSidebarCollapseButton"]::after {{
         content: "≡ FILTERS" !important;
         font-family: 'IBM Plex Mono', monospace !important;
-        font-size: 13px !important;
+        font-size: 12px !important;
         font-weight: 700 !important;
         color: {RH_BG} !important;
         letter-spacing: 0.12em !important;
@@ -78,10 +74,8 @@ def apply_theme():
         line-height: 1 !important;
     }}
 
-    /* Hover state */
     [data-testid="collapsedControl"]:hover,
-    [data-testid="stSidebarCollapseButton"]:hover,
-    button[kind="header"]:hover {{
+    [data-testid="stSidebarCollapseButton"]:hover {{
         background: {RH_GOLD_LIGHT} !important;
         cursor: pointer !important;
     }}
