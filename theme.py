@@ -27,26 +27,63 @@ def apply_theme():
 
     #MainMenu, footer {{ visibility: hidden; }}
 
-    /* Keep the Streamlit header visible — it contains the sidebar toggle button.
-       Hiding the entire header (the previous behaviour) made the sidebar arrow
-       invisible on Streamlit Cloud, leaving filters inaccessible. */
+    /* Keep the Streamlit header visible — it contains the sidebar toggle button. */
     [data-testid="stHeader"] {{
         background: transparent !important;
         height: auto !important;
     }}
 
-    /* Make the sidebar collapse/expand button gold so it's clearly visible */
+    /* ============================================================
+       SIDEBAR TOGGLE BUTTON — make it large, gold, and unmissable
+       ============================================================ */
     [data-testid="collapsedControl"],
-    [data-testid="stSidebarCollapseButton"] {{
-        color: {RH_GOLD_LIGHT} !important;
-        background: {RH_SURFACE} !important;
-        border: 1px solid {RH_GOLD_DIM} !important;
+    [data-testid="stSidebarCollapseButton"],
+    button[kind="header"] {{
+        background: {RH_GOLD} !important;
+        color: {RH_BG} !important;
+        border: 2px solid {RH_GOLD_LIGHT} !important;
         border-radius: 0 !important;
+        padding: 8px 14px !important;
+        min-width: 48px !important;
+        height: 40px !important;
+        z-index: 999999 !important;
+        box-shadow: 0 0 12px rgba(184,136,26,0.5) !important;
+        animation: rh-pulse 2s ease-in-out infinite !important;
     }}
-    [data-testid="collapsedControl"] svg,
-    [data-testid="stSidebarCollapseButton"] svg {{
-        color: {RH_GOLD_LIGHT} !important;
-        fill: {RH_GOLD_LIGHT} !important;
+
+    @keyframes rh-pulse {{
+        0%, 100% {{ box-shadow: 0 0 12px rgba(184,136,26,0.5); }}
+        50%      {{ box-shadow: 0 0 20px rgba(184,136,26,0.9); }}
+    }}
+
+    /* HIDE the broken Material Icons text labels ("keyboard_double_…") */
+    [data-testid="collapsedControl"] *,
+    [data-testid="stSidebarCollapseButton"] *,
+    button[kind="header"] * {{
+        font-size: 0 !important;
+        color: transparent !important;
+    }}
+
+    /* Replace with a clean ASCII chevron — black on gold so it pops */
+    [data-testid="collapsedControl"]::after,
+    [data-testid="stSidebarCollapseButton"]::after,
+    button[kind="header"]::after {{
+        content: "≡ FILTERS" !important;
+        font-family: 'IBM Plex Mono', monospace !important;
+        font-size: 13px !important;
+        font-weight: 700 !important;
+        color: {RH_BG} !important;
+        letter-spacing: 0.12em !important;
+        display: inline-block !important;
+        line-height: 1 !important;
+    }}
+
+    /* Hover state */
+    [data-testid="collapsedControl"]:hover,
+    [data-testid="stSidebarCollapseButton"]:hover,
+    button[kind="header"]:hover {{
+        background: {RH_GOLD_LIGHT} !important;
+        cursor: pointer !important;
     }}
 
     .stApp {{
