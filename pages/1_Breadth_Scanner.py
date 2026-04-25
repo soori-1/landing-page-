@@ -16,7 +16,8 @@ from theme import (
     RH_BG, RH_SURFACE, RH_TEXT, RH_MUTED, RH_BORDER
 )
 
-st.set_page_config(layout="wide", page_title="RH | Breadth Scanner")
+st.set_page_config(layout="wide", page_title="RH | Breadth Scanner",
+                   initial_sidebar_state="expanded")
 apply_theme()
 render_header("Scanner 01 · Nifty 500 Breadth")
 
