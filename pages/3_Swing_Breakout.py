@@ -681,6 +681,19 @@ if st.session_state.sw_results is None:
         <div class="empty-state-orn">△</div>
         <div class="empty-state-text">Awaiting your instructions</div>
         <div class="empty-state-sub">Configure filters and press Run Screen</div>
+        <div style='margin-top:36px; padding:16px 24px; display:inline-block;
+                    background:{RH_SURFACE}; border:1px solid {RH_GOLD_DIM};
+                    font-family:IBM Plex Mono,monospace; font-size:0.78rem;
+                    color:{RH_GOLD_LIGHT}; letter-spacing:0.08em;'>
+            ◀ Open the sidebar from the top-left to access filters
+        </div>
+        <div style='margin-top:14px; font-family:IBM Plex Mono,monospace;
+                    font-size:0.68rem; color:{RH_MUTED}; letter-spacing:0.06em;'>
+            If the sidebar arrow isn't visible, look for "&gt;" at the very
+            top-left edge of the page · or use the keyboard shortcut
+            <kbd style='background:{RH_BG}; padding:2px 6px; border:1px solid {RH_BORDER};
+                        color:{RH_GOLD_LIGHT};'>Ctrl/Cmd + Shift + .</kbd>
+        </div>
     </div>""", unsafe_allow_html=True)
     if st.button("← BACK TO HUB", key="back_empty"):
         st.switch_page("Home.py")
