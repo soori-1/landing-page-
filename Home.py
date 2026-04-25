@@ -320,11 +320,12 @@ for row in rows:
     for col, scanner in zip(cols, row):
         with col:
             st.markdown(render_tile(scanner), unsafe_allow_html=True)
-            st.page_link(
-                f"pages/{scanner['page']}.py",
-                label=f"OPEN {scanner['title'].upper()}  →",
+            if st.button(
+                f"OPEN {scanner['title'].upper()}  →",
+                key=f"open_{scanner['n']}",
                 use_container_width=True,
-            )
+            ):
+                st.switch_page(f"pages/{scanner['page']}.py")
             st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
 
 
