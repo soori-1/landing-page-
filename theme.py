@@ -25,7 +25,29 @@ def apply_theme():
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Fraunces:wght@700;900&family=IBM+Plex+Mono:wght@300;400;500&display=swap');
 
-    #MainMenu, footer, header {{ visibility: hidden; }}
+    #MainMenu, footer {{ visibility: hidden; }}
+
+    /* Keep the Streamlit header visible — it contains the sidebar toggle button.
+       Hiding the entire header (the previous behaviour) made the sidebar arrow
+       invisible on Streamlit Cloud, leaving filters inaccessible. */
+    [data-testid="stHeader"] {{
+        background: transparent !important;
+        height: auto !important;
+    }}
+
+    /* Make the sidebar collapse/expand button gold so it's clearly visible */
+    [data-testid="collapsedControl"],
+    [data-testid="stSidebarCollapseButton"] {{
+        color: {RH_GOLD_LIGHT} !important;
+        background: {RH_SURFACE} !important;
+        border: 1px solid {RH_GOLD_DIM} !important;
+        border-radius: 0 !important;
+    }}
+    [data-testid="collapsedControl"] svg,
+    [data-testid="stSidebarCollapseButton"] svg {{
+        color: {RH_GOLD_LIGHT} !important;
+        fill: {RH_GOLD_LIGHT} !important;
+    }}
 
     .stApp {{
         background: {RH_BG};
