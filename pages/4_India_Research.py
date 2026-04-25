@@ -656,6 +656,18 @@ if not companies:
 
 # ─── LANDING — example screener cards ─────────────────────────
 if st.session_state.ir_results is None:
+    st.markdown(f"""
+    <div style='background:{RH_SURFACE}; border:1px solid {RH_GOLD_DIM};
+                padding:14px 22px; margin-bottom:20px;
+                font-family:IBM Plex Mono,monospace; font-size:0.78rem;
+                color:{RH_GOLD_LIGHT}; letter-spacing:0.06em;'>
+        ◀ Open the sidebar from the top-left to add filters and run the screener.
+        <span style='color:{RH_MUTED};'>If the sidebar arrow isn't visible, try
+        keyboard shortcut</span>
+        <kbd style='background:{RH_BG}; padding:2px 6px; border:1px solid {RH_BORDER};
+                    color:{RH_GOLD_LIGHT}; font-family:IBM Plex Mono;'>Ctrl/Cmd + Shift + .</kbd>
+    </div>
+    """, unsafe_allow_html=True)
     st.subheader("Build your screener")
     st.markdown(
         f'<p style="color:{RH_MUTED}; font-size:11px; '
