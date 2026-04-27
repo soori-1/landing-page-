@@ -119,13 +119,59 @@ def apply_theme():
         letter-spacing: 0.12em;
         text-transform: uppercase;
     }}
+    /* ── SIDEBAR INPUTS — cream bg, dark ink text, clearly readable ── */
     [data-testid="stSidebar"] .stSelectbox > div > div,
+    [data-testid="stSidebar"] .stSelectbox > div > div > div,
+    [data-testid="stSidebar"] .stSelectbox [data-baseweb="select"] > div,
     [data-testid="stSidebar"] .stNumberInput > div > div > input,
-    [data-testid="stSidebar"] .stTextInput > div > div > input {{
-        background: rgba(0,0,0,0.3) !important;
-        border: 1px solid rgba(200,146,42,0.4) !important;
-        color: {RH_BG} !important;
+    [data-testid="stSidebar"] .stTextInput > div > div > input,
+    [data-testid="stSidebar"] input,
+    [data-testid="stSidebar"] [data-baseweb="select"] > div {{
+        background: {RH_BG} !important;
+        border: 1px solid {RH_GOLD} !important;
+        color: {RH_TEXT} !important;
         border-radius: 0 !important;
+        font-family: 'IBM Plex Mono', monospace !important;
+        font-size: 12px !important;
+    }}
+
+    /* Dropdown option text */
+    [data-testid="stSidebar"] [data-baseweb="select"] span,
+    [data-testid="stSidebar"] [data-baseweb="select"] div,
+    [data-testid="stSidebar"] .stSelectbox span {{
+        color: {RH_TEXT} !important;
+    }}
+
+    /* Number input +/- buttons */
+    [data-testid="stSidebar"] [data-testid="stNumberInputStepDown"],
+    [data-testid="stSidebar"] [data-testid="stNumberInputStepUp"] {{
+        background: {RH_GOLD} !important;
+        color: #FFFFFF !important;
+        border: none !important;
+    }}
+
+    /* Radio buttons in sidebar */
+    [data-testid="stSidebar"] .stRadio > div {{
+        gap: 12px;
+    }}
+    [data-testid="stSidebar"] .stRadio label span:last-child {{
+        color: {RH_BG} !important;
+        font-size: 13px !important;
+    }}
+
+    /* Checkbox in sidebar */
+    [data-testid="stSidebar"] .stCheckbox label span:last-child {{
+        color: {RH_BG} !important;
+        font-size: 12px !important;
+    }}
+
+    /* Slider track and thumb */
+    [data-testid="stSidebar"] [data-testid="stSlider"] > div > div > div {{
+        background: {RH_GOLD} !important;
+    }}
+    [data-testid="stSidebar"] [data-testid="stSlider"] [role="slider"] {{
+        background: {RH_MAROON} !important;
+        border: 2px solid {RH_GOLD} !important;
     }}
     [data-testid="stSidebar"] [data-testid="stSidebarCollapseButton"] {{
         color: {RH_GOLD_LIGHT} !important;
