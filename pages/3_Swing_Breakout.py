@@ -568,20 +568,79 @@ def find_valid_resistance(df, swing_highs, threshold_atr_mult=1.5,
     return None
 
 
+@st.cache_data(ttl=1800, show_spinner=False)
+def batch_download_prices():
+    """
+    Download 2Y daily OHLCV for the entire Nifty 500 in ONE API call.
+    yf.download() is ~10x faster than 500 individual Ticker.history() calls.
+    Cached for 30 min — shared between approaching + breakout scans.
+    """
+    import yfinance as yf
+    data = yf.download(
+        WATCHLIST,
+        period="2y",
+        interval="1d",
+        auto_adjust=True,
+        progress=False,
+        group_by="ticker",
+        threads=True,        # yfinance internal threading
+    )
+    return data
+
+
+@st.cache_data(ttl=1800, show_spinner=False)
+def batch_download_mcap():
+    """
+    Fetch market caps for all tickers in parallel using ThreadPoolExecutor.
+    Returns dict: {sym: mcap_cr}
+    """
+    import yfinance as yf
+    from concurrent.futures import ThreadPoolExecutor, as_completed
+
+    def _get_mcap(sym):
+        try:
+            fi = yf.Ticker(sym).fast_info
+            return sym, (getattr(fi, "market_cap", 0) or 0) / 1e7
+        except Exception:
+            return sym, 0
+
+    mcap_map = {}
+    with ThreadPoolExecutor(max_workers=30) as ex:
+        futures = {ex.submit(_get_mcap, sym): sym for sym in WATCHLIST}
+        for fut in as_completed(futures):
+            sym, mcap = fut.result()
+            mcap_map[sym] = mcap
+    return mcap_map
+
+
+def _extract_df(all_data, sym):
+    """Pull a single ticker's DataFrame out of the batch download result."""
+    try:
+        if sym in all_data.columns.get_level_values(0):
+            df = all_data[sym][['Open','High','Low','Close','Volume']].copy()
+            df = df.dropna(subset=['Close'])
+            return df if len(df) >= 80 else None
+        return None
+    except Exception:
+        return None
+
+
 @st.cache_data(ttl=900, show_spinner=False)
 def run_approaching(lookback, min_mcap, threshold_atr):
-    import yfinance as yf
     risk_on, _ = get_market_regime()
-    nifty_ret = get_nifty_return(63)
+    nifty_ret  = get_nifty_return(63)
+
+    all_data = batch_download_prices()
+    mcap_map = batch_download_mcap()
+
     results = []
     for sym in WATCHLIST:
         try:
-            t = yf.Ticker(sym)
-            df = t.history(period="2y", interval="1d")
-            if df.empty or len(df) < 80:
-                continue
-            mcap_cr = (getattr(t.fast_info, "market_cap", 0) or 0) / 1e7
+            mcap_cr = mcap_map.get(sym, 0)
             if mcap_cr < min_mcap:
+                continue
+            df = _extract_df(all_data, sym)
+            if df is None:
                 continue
             rs_ok, stock_ret, rs_diff = check_rs(df, nifty_ret)
             if not rs_ok:
@@ -590,8 +649,8 @@ def run_approaching(lookback, min_mcap, threshold_atr):
             r = find_valid_resistance(df, sh, threshold_atr_mult=threshold_atr)
             if not r:
                 continue
-            close = round(float(df['Close'].iloc[-1]), 2)
-            prev  = round(float(df['Close'].iloc[-2]), 2)
+            close   = round(float(df['Close'].iloc[-1]), 2)
+            prev    = round(float(df['Close'].iloc[-2]), 2)
             day_chg = round((close - prev) / prev * 100, 2)
             vn = float(df['Volume'].iloc[-1])
             va = float(df['Volume'].iloc[-21:-1].mean())
@@ -619,34 +678,37 @@ def run_approaching(lookback, min_mcap, threshold_atr):
 
 @st.cache_data(ttl=900, show_spinner=False)
 def run_breakouts(lookback, min_mcap, days_back=5):
-    import yfinance as yf
     risk_on, _ = get_market_regime()
-    nifty_ret = get_nifty_return(63)
+    nifty_ret  = get_nifty_return(63)
+
+    all_data = batch_download_prices()
+    mcap_map = batch_download_mcap()
+
     results = []
     for sym in WATCHLIST:
         try:
-            t = yf.Ticker(sym)
-            df = t.history(period="2y", interval="1d")
-            if df.empty or len(df) < 80:
-                continue
-            mcap_cr = (getattr(t.fast_info, "market_cap", 0) or 0) / 1e7
+            mcap_cr = mcap_map.get(sym, 0)
             if mcap_cr < min_mcap:
+                continue
+            df = _extract_df(all_data, sym)
+            if df is None:
                 continue
             rs_ok, stock_ret, rs_diff = check_rs(df, nifty_ret)
             if not rs_ok:
                 continue
             sh, sl = find_swings(df, lookback)
-            n = len(df)
+            n      = len(df)
             closes = df['Close'].values
             vols   = df['Volume'].values
 
             bo_days = None; bo_level = None; bo_date = None; conf = None
             for days_ago in range(1, days_back + 1):
-                cidx = n - days_ago
-                c_close = float(closes[cidx]); p_close = float(closes[cidx - 1])
-                df_s = df.iloc[:cidx]
+                cidx    = n - days_ago
+                c_close = float(closes[cidx])
+                p_close = float(closes[cidx - 1])
+                df_s    = df.iloc[:cidx]
                 sh_s, _ = find_swings(df_s, lookback)
-                v = find_valid_resistance(df_s, sh_s, threshold_atr_mult=10.0)
+                v       = find_valid_resistance(df_s, sh_s, threshold_atr_mult=10.0)
                 if not v:
                     continue
                 res = v["price"]
@@ -669,13 +731,14 @@ def run_breakouts(lookback, min_mcap, days_back=5):
             if bo_days is None:
                 continue
 
-            close = round(float(closes[-1]), 2)
-            prev  = round(float(closes[-2]), 2)
+            close   = round(float(closes[-1]), 2)
+            prev    = round(float(closes[-2]), 2)
             day_chg = round((close - prev) / prev * 100, 2)
             bo_pct  = round((close - bo_level) / bo_level * 100, 2)
-            lbl = "TODAY" if bo_days == 1 else f"{bo_days}D AGO"
-            adx = round(calculate_adx(df), 1)
-            vn = float(df['Volume'].iloc[-1]); va = float(df['Volume'].iloc[-21:-1].mean())
+            lbl     = "TODAY" if bo_days == 1 else f"{bo_days}D AGO"
+            adx     = round(calculate_adx(df), 1)
+            vn = float(df['Volume'].iloc[-1])
+            va = float(df['Volume'].iloc[-21:-1].mean())
             vr = round(vn / va, 2) if va > 0 else 0
 
             results.append({
@@ -694,6 +757,7 @@ def run_breakouts(lookback, min_mcap, days_back=5):
         except Exception:
             continue
     return sorted(results, key=lambda x: (x["days_ago"], -x["bo_pct"])), risk_on
+
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -747,7 +811,7 @@ if "sw_breakouts" not in st.session_state: st.session_state.sw_breakouts = None
 if "sw_risk_on"   not in st.session_state: st.session_state.sw_risk_on = True
 
 if run_btn:
-    with st.spinner("Scanning Nifty 500 universe · applying 8 CMT filters · ~5–8 min…"):
+    with st.spinner("Downloading Nifty 500 data in batch · scanning signals · ~60–90 sec…"):
         st.session_state.sw_results,   st.session_state.sw_risk_on = run_approaching(
             lookback, min_mcap, threshold_atr
         )
