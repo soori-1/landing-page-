@@ -24,8 +24,8 @@ import os, sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from theme import (
     apply_theme, render_header,
-    RH_GOLD, RH_GOLD_LIGHT, RH_GOLD_DIM, RH_RED, RH_GREEN,
-    RH_BG, RH_SURFACE, RH_SURFACE2, RH_TEXT, RH_MUTED, RH_BORDER
+    RH_MAROON, RH_MAROON_DK, RH_GOLD, RH_GOLD_LIGHT, RH_GOLD_DIM,
+    RH_RED, RH_GREEN, RH_BG, RH_SURFACE, RH_SURFACE2, RH_TEXT, RH_MUTED, RH_BORDER
 )
 
 st.set_page_config(layout="wide", page_title="RH | Breakout Watch",
@@ -248,29 +248,108 @@ st.markdown(f"""
 #  WATCHLIST + SECTOR MAP
 # ═══════════════════════════════════════════════════════════════
 WATCHLIST = [
-    "RELIANCE.NS","TCS.NS","HDFCBANK.NS","INFY.NS","ICICIBANK.NS",
-    "HINDUNILVR.NS","SBIN.NS","BAJFINANCE.NS","BHARTIARTL.NS","KOTAKBANK.NS",
-    "AXISBANK.NS","LT.NS","HCLTECH.NS","ASIANPAINT.NS","WIPRO.NS",
-    "MARUTI.NS","SUNPHARMA.NS","TITAN.NS","ULTRACEMCO.NS","NESTLEIND.NS",
-    "ONGC.NS","POWERGRID.NS","NTPC.NS","TECHM.NS","BAJAJFINSV.NS",
-    "TATAMOTORS.NS","DRREDDY.NS","DIVISLAB.NS","CIPLA.NS","ADANIPORTS.NS",
-    "COALINDIA.NS","GRASIM.NS","HINDALCO.NS","JSWSTEEL.NS","TATASTEEL.NS",
-    "BPCL.NS","IOC.NS","HEROMOTOCO.NS","EICHERMOT.NS","BAJAJ-AUTO.NS",
-    "BRITANNIA.NS","DABUR.NS","MARICO.NS","COLPAL.NS","GODREJCP.NS",
-    "PIDILITIND.NS","BERGEPAINT.NS","HAVELLS.NS","VOLTAS.NS","ITC.NS",
-    "PERSISTENT.NS","MPHASIS.NS","LTIM.NS","COFORGE.NS","ZOMATO.NS",
-    "IRCTC.NS","INDHOTEL.NS","RVNL.NS","IRFC.NS","RECLTD.NS",
-    "PFC.NS","BANKBARODA.NS","CANBK.NS","PNB.NS","FEDERALBNK.NS",
-    "IDFCFIRSTB.NS","INDUSINDBK.NS","AUBANK.NS","CHOLAFIN.NS","MUTHOOTFIN.NS",
-    "APOLLOHOSP.NS","FORTIS.NS","AUROPHARMA.NS","LUPIN.NS","TORNTPHARM.NS",
-    "TATAPOWER.NS","ADANIGREEN.NS","NAUKRI.NS","INDIGO.NS","OFSS.NS",
-    "DIXON.NS","TATACONSUM.NS","MOTHERSON.NS","BALKRISIND.NS","DMART.NS",
-    "ABCAPITAL.NS","MFSL.NS","SBICARD.NS","HDFCAMC.NS","NIPPONLIFE.NS",
-    "ANGELONE.NS","ICICIPRULI.NS","HDFCLIFE.NS","360ONE.NS","MOTILALOFS.NS",
-    "ICICIGI.NS","STARHEALTH.NS","NUVAMA.NS","HAL.NS","BEL.NS","BHEL.NS",
-    "COCHINSHIP.NS","CGPOWER.NS","SIEMENS.NS","ABB.NS","CUMMINSIND.NS",
-    "THERMAX.NS","TRENT.NS","KALYANKJIL.NS","VBL.NS","KPITTECH.NS",
-    "SUPREMEIND.NS","GRINDWELL.NS","TIMKEN.NS","SCHAEFFLER.NS",
+    # ── NIFTY 50 ──────────────────────────────────────────────────────
+    "RELIANCE.NS","TCS.NS","HDFCBANK.NS","BHARTIARTL.NS","ICICIBANK.NS",
+    "INFOSYS.NS","SBIN.NS","HINDUNILVR.NS","ITC.NS","LT.NS",
+    "KOTAKBANK.NS","AXISBANK.NS","BAJFINANCE.NS","ASIANPAINT.NS","MARUTI.NS",
+    "SUNPHARMA.NS","TITAN.NS","ULTRACEMCO.NS","WIPRO.NS","NTPC.NS",
+    "POWERGRID.NS","ONGC.NS","HCLTECH.NS","NESTLEIND.NS","TATAMOTORS.NS",
+    "BAJAJFINSV.NS","ADANIPORTS.NS","JSWSTEEL.NS","COALINDIA.NS","INDUSINDBK.NS",
+    "TECHM.NS","DRREDDY.NS","GRASIM.NS","DIVISLAB.NS","CIPLA.NS",
+    "EICHERMOT.NS","TATASTEEL.NS","HINDALCO.NS","APOLLOHOSP.NS","BPCL.NS",
+    "HEROMOTOCO.NS","BRITANNIA.NS","ADANIENT.NS","TATACONSUM.NS","SBILIFE.NS",
+    "HDFCLIFE.NS","BAJAJ-AUTO.NS","LTF.NS","SHREECEM.NS","DMART.NS",
+    # ── NIFTY NEXT 50 ─────────────────────────────────────────────────
+    "ABB.NS","ADANIGREEN.NS","AMBUJACEM.NS","AUROPHARMA.NS","BANDHANBNK.NS",
+    "BERGEPAINT.NS","BOSCHLTD.NS","CANBK.NS","CHOLAFIN.NS","COLPAL.NS",
+    "DABUR.NS","DLF.NS","GAIL.NS","GODREJCP.NS","GODREJPROP.NS",
+    "HAL.NS","HAVELLS.NS","ICICIGI.NS","ICICIPRULI.NS","INDUSTOWER.NS",
+    "IRCTC.NS","JINDALSTEL.NS","JUBLFOOD.NS","LUPIN.NS","MARICO.NS",
+    "MUTHOOTFIN.NS","NAUKRI.NS","NHPC.NS","PAGEIND.NS","PIDILITIND.NS",
+    "PIIND.NS","PNB.NS","RECLTD.NS","SAIL.NS","SIEMENS.NS",
+    "SRF.NS","TORNTPHARM.NS","TRENT.NS","UPL.NS","VEDL.NS",
+    "VOLTAS.NS","ZOMATO.NS","NYKAA.NS","PAYTM.NS","INDIGO.NS",
+    "JIOFIN.NS","TATAPOWER.NS","IRFC.NS","MOTHERSON.NS","POLYCAB.NS",
+    # ── NIFTY MIDCAP 150 ──────────────────────────────────────────────
+    "ABCAPITAL.NS","ACC.NS","AIAENG.NS","ALKEM.NS","ASTRAL.NS",
+    "ATUL.NS","AUBANK.NS","BALKRISIND.NS","BATAINDIA.NS","BEL.NS",
+    "BHARATFORG.NS","BHEL.NS","BIOCON.NS","BLUEDART.NS","CEATLTD.NS",
+    "COFORGE.NS","CROMPTON.NS","CUMMINSIND.NS","DEEPAKNTR.NS","DIXON.NS",
+    "ELGIEQUIP.NS","EMAMILTD.NS","ENDURANCE.NS","ESCORTS.NS","EXIDEIND.NS",
+    "FEDERALBNK.NS","FORTIS.NS","GLENMARK.NS","GRANULES.NS","GUJGASLTD.NS",
+    "HINDPETRO.NS","IDFCFIRSTB.NS","IEX.NS","INDHOTEL.NS","IOC.NS",
+    "JBCHEPHARM.NS","JKCEMENT.NS","JSWENERGY.NS","KAJARIACER.NS","KEC.NS",
+    "KPITTECH.NS","LALPATHLAB.NS","LAURUSLABS.NS","LICHSGFIN.NS","LTTS.NS",
+    "MANAPPURAM.NS","MAXHEALTH.NS","MCX.NS","METROPOLIS.NS","MPHASIS.NS",
+    "MRF.NS","NATIONALUM.NS","NAVINFLUOR.NS","NCC.NS","NMDC.NS",
+    "OBEROIRLTY.NS","OFSS.NS","OIL.NS","PERSISTENT.NS","PETRONET.NS",
+    "PHOENIXLTD.NS","PRESTIGE.NS","PVRINOX.NS","RAMCOCEM.NS","RITES.NS",
+    "SCHAEFFLER.NS","SOBHA.NS","SONACOMS.NS","STARHEALTH.NS","SUNDRMFAST.NS",
+    "SUNTV.NS","SUPREMEIND.NS","SYNGENE.NS","TATACHEM.NS","TATACOMM.NS",
+    "TATAELXSI.NS","TATATECH.NS","THERMAX.NS","TIMKEN.NS","TORNTPOWER.NS",
+    "TRIDENT.NS","TVSMOTORS.NS","UNIONBANK.NS","VGUARD.NS","ZYDUSLIFE.NS",
+    # ── NIFTY SMALLCAP 250 (selected liquid names) ────────────────────
+    "AAVAS.NS","ANGELONE.NS","APTUS.NS","ASHOKLEY.NS","ATGL.NS",
+    "AVANTIFEED.NS","BAJAJHLDNG.NS","BALRAMCHIN.NS","BEML.NS","BIKAJI.NS",
+    "BLUESTARCO.NS","BRIGADE.NS","BSE.NS","CARBORUNIV.NS","CASTROLIND.NS",
+    "CESC.NS","CLEAN.NS","COCHINSHIP.NS","COROMANDEL.NS","CRAFTSMAN.NS",
+    "CREDITACC.NS","CYIENT.NS","DATAPATTNS.NS","DELHIVERY.NS","DEVYANI.NS",
+    "DHANUKA.NS","ECLERX.NS","EIDPARRY.NS","ELECON.NS","EPL.NS",
+    "EQUITASBNK.NS","FINEORG.NS","FLUOROCHEM.NS","FORCEMOT.NS","GALAXYSURF.NS",
+    "GHCL.NS","GICRE.NS","GILLETTE.NS","GLAXO.NS","GPIL.NS",
+    "GREENPLY.NS","GRSE.NS","GSFC.NS","HAPPSTMNDS.NS","HATSUN.NS",
+    "HAWKINCOOK.NS","HIKAL.NS","HIMADRI.NS","HOMEFIRST.NS","HUDCO.NS",
+    "ICRA.NS","IPCALAB.NS","IRCON.NS","IRB.NS","ISEC.NS",
+    "IXIGO.NS","JMFINANCIL.NS","JSWINFRA.NS","JUSTDIAL.NS","JYOTHYLAB.NS",
+    "KANSAINER.NS","KAYNES.NS","KFINTECH.NS","KNRCON.NS","KOLTEPATIL.NS",
+    "KPIL.NS","KPRMILL.NS","LATENTVIEW.NS","LEMONTREE.NS","LUXIND.NS",
+    "MANKIND.NS","MAPMYINDIA.NS","MASTEK.NS","MEDANTA.NS","MEDPLUS.NS",
+    "MOTILALOFS.NS","MTAR.NS","NATCOPHARM.NS","NEWGEN.NS","NOCIL.NS",
+    "NUVOCO.NS","OLECTRA.NS","PARADEEP.NS","PFIZER.NS","PNBHOUSING.NS",
+    "POLYMED.NS","PRAJ.NS","PSPPROJECT.NS","QUESS.NS","RAINBOW.NS",
+    "RALLIS.NS","RATEGAIN.NS","RAYMOND.NS","RBLBANK.NS","REDINGTON.NS",
+    "ROSSARI.NS","ROUTE.NS","SAREGAMA.NS","SBICARD.NS","SCHNEIDER.NS",
+    "SEQUENT.NS","SHILPAMED.NS","SHOPERSTOP.NS","SKIPPER.NS","SOLARA.NS",
+    "SPANDANA.NS","SPARC.NS","STLTECH.NS","SUBROS.NS","SUDARSCHEM.NS",
+    "SUMICHEM.NS","SYMPHONY.NS","TANLA.NS","TEAMLEASE.NS","THYROCARE.NS",
+    "TITAGARH.NS","TRIVENI.NS","TTKPRESTIG.NS","TVTODAY.NS","UFLEX.NS",
+    "UNIPARTS.NS","UTIAMC.NS","UTKARSHBNK.NS","VBL.NS","VENKEYS.NS",
+    "VINATIORGA.NS","VIPIND.NS","WAAREEENER.NS","WELCORP.NS","WELSPUNLIV.NS",
+    "WOCKPHARMA.NS","ZENSARTECH.NS","ZYDUSWELL.NS",
+    # ── ADDITIONAL NIFTY 500 ──────────────────────────────────────────
+    "360ONE.NS","3MINDIA.NS","AARTIIND.NS","AARTIPHARM.NS","ABFRL.NS",
+    "AEGISCHEM.NS","AFFLE.NS","AJANTPHARM.NS","ALEMBICLTD.NS","AMARAJABAT.NS",
+    "ANANTRAJ.NS","ANGELONE.NS","APOLLO.NS","APOLLOTYRE.NS","ARVIND.NS",
+    "ASAHIINDIA.NS","ASHIANA.NS","BAJAJCON.NS","BAJAJELEC.NS","BBTC.NS",
+    "BOMDYEING.NS","BPCL.NS","BSOFT.NS","CAMS.NS","CAMPUS.NS",
+    "CCL.NS","CENTURYPLY.NS","CENTURYTEX.NS","CGPOWER.NS","CHALET.NS",
+    "CHAMBLFERT.NS","CHEMPLASTS.NS","CHOLAHLDNG.NS","CMSINFO.NS","CRISIL.NS",
+    "DBCORP.NS","DCB.NS","DECCANCE.NS","EDELWEISS.NS","EICHERMOT.NS",
+    "EMCURE.NS","ENGINERSIN.NS","FLAIR.NS","FORTIS.NS","FSL.NS",
+    "GESHIP.NS","GMRINFRA.NS","GNFC.NS","GOCOLORS.NS","GRAPHITE.NS",
+    "GREENPANEL.NS","GRINDWELL.NS","HFCL.NS","HINDCOPPER.NS","HINDPETRO.NS",
+    "HONASA.NS","IBREALEST.NS","IDFC.NS","IIFL.NS","INDIGOPNTS.NS",
+    "INTELLECT.NS","IOB.NS","IPCALAB.NS","JAIBALAJI.NS","JKLAKSHMI.NS",
+    "JKPAPER.NS","JKTYRE.NS","JSL.NS","JTEKTINDIA.NS","JUBILANT.NS",
+    "KALYANKJIL.NS","KANSAINER.NS","KIRIINDUS.NS","KOTAKBANK.NS","KRBL.NS",
+    "LTIM.NS","LUXIND.NS","MAHINDCIE.NS","MANINFRA.NS","MANYAVAR.NS",
+    "MATRIMONY.NS","MINDAIND.NS","MIRZAINT.NS","MMTC.NS","MOIL.NS",
+    "MRPL.NS","MSTCLTD.NS","MUTHOOTFIN.NS","NBCC.NS","NIACL.NS",
+    "NIITLTD.NS","NILKAMAL.NS","NLFOODSLTD.NS","NLCINDIA.NS","NUVAMA.NS",
+    "NUVOCO.NS","OFSS.NS","OPTIEMUS.NS","ORIENTELEC.NS","ORTINLABS.NS",
+    "PATANJALI.NS","PEL.NS","PGHL.NS","PHOENIXLTD.NS","POLYMED.NS",
+    "PRIME.NS","PRINCEPIPE.NS","RADICO.NS","RAJRATAN.NS","RATNAMANI.NS",
+    "RVNL.NS","SAFARI.NS","SANDUMA.NS","SAPPHIRE.NS","SAREGAMA.NS",
+    "SBFC.NS","SENCO.NS","SHAREINDIA.NS","SHYAMMETL.NS","SIGNATUREG.NS",
+    "SIYSIL.NS","SKFINDIA.NS","SMLISUZU.NS","SOBHA.NS","SPENCERS.NS",
+    "SSWL.NS","STJUDE.NS","SUNTECK.NS","SUPRAJIT.NS","SUZLON.NS",
+    "SWSOLAR.NS","TAPARIA.NS","TATAINVEST.NS","TCIEXP.NS","TCNSCLOTH.NS",
+    "TECHNOE.NS","TEGA.NS","THANGAMAYL.NS","TIMETECHNO.NS","TINPLATE.NS",
+    "TIPSMUSIC.NS","TPLPLASTEH.NS","TRIL.NS","UCOBANK.NS","UJJIVAN.NS",
+    "UJJIVANSFB.NS","VARDHMAN.NS","VARROC.NS","VESUVIUS.NS","VIJAYA.NS",
+    "VMART.NS","VOLTAMP.NS","VRLLOG.NS","VSTIND.NS","WABAG.NS",
+    "WATERBASE.NS","WELSPUNIND.NS","WINDLAS.NS","WONDERLA.NS","XCHANGING.NS",
+    "YATHARTH.NS","ZEEL.NS","ZENTEC.NS",
 ]
 
 SECTOR_MAP = {
@@ -627,7 +706,7 @@ with st.sidebar:
                     color:{RH_GOLD_LIGHT}; letter-spacing:0.04em;'>△ Breakout Watch</div>
         <div style='font-family:IBM Plex Mono,monospace; font-size:0.62rem;
                     color:{RH_MUTED}; margin-top:6px; letter-spacing:0.18em;
-                    text-transform:uppercase;'>NSE · Daily · CMT</div>
+                    text-transform:uppercase;'>Nifty 500 · Daily · CMT</div>
     </div>""", unsafe_allow_html=True)
 
     threshold_atr = st.slider("Gap to SH (ATRs)", 0.3, 3.0, 1.5, 0.1)
@@ -668,7 +747,7 @@ if "sw_breakouts" not in st.session_state: st.session_state.sw_breakouts = None
 if "sw_risk_on"   not in st.session_state: st.session_state.sw_risk_on = True
 
 if run_btn:
-    with st.spinner("Scanning 110 stocks · applying 8 CMT filters..."):
+    with st.spinner("Scanning Nifty 500 universe · applying 8 CMT filters · ~5–8 min…"):
         st.session_state.sw_results,   st.session_state.sw_risk_on = run_approaching(
             lookback, min_mcap, threshold_atr
         )
@@ -767,7 +846,7 @@ def render_chart(sel):
         fig.add_trace(go.Scatter(
             x=sh_d, y=sh_p, mode='markers',
             marker=dict(color=RH_GOLD, size=8, symbol='triangle-down',
-                        line=dict(color=RH_GOLD_DIM, width=1)),
+                        line=dict(color=RH_MAROON, width=1)),
             name="Swing Highs"
         ), row=1, col=1)
 
@@ -793,20 +872,20 @@ def render_chart(sel):
         ), row=2, col=1)
 
         fig.update_layout(
-            height=500, plot_bgcolor=RH_BG, paper_bgcolor=RH_BG,
+            height=500, plot_bgcolor="#F5ECD7", paper_bgcolor="#EDE2C8",
             font=dict(family='IBM Plex Mono', color=RH_MUTED, size=10),
             xaxis_rangeslider_visible=False,
             margin=dict(l=10, r=10, t=10, b=10),
             legend=dict(orientation='h', y=1.04, x=0,
                          font=dict(size=9, color=RH_MUTED),
                          bgcolor='rgba(0,0,0,0)'),
-            hoverlabel=dict(bgcolor=RH_SURFACE, bordercolor=RH_GOLD_DIM,
+            hoverlabel=dict(bgcolor="#FFFFFF", bordercolor=RH_MAROON,
                              font=dict(family='IBM Plex Mono', color=RH_TEXT))
         )
-        fig.update_xaxes(gridcolor='rgba(58,53,48,0.5)', zeroline=False,
-                          linecolor=RH_BORDER)
-        fig.update_yaxes(gridcolor='rgba(58,53,48,0.5)', zeroline=False,
-                          linecolor=RH_BORDER)
+        fig.update_xaxes(gridcolor='rgba(139,26,26,0.1)', zeroline=False,
+                          linecolor="rgba(139,26,26,0.2)")
+        fig.update_yaxes(gridcolor='rgba(139,26,26,0.1)', zeroline=False,
+                          linecolor="rgba(139,26,26,0.2)")
         st.plotly_chart(fig, use_container_width=True,
                          config={"displayModeBar": False})
     except Exception as e:
@@ -1228,15 +1307,15 @@ with tab3:
                             name="Signals"
                         ))
                     fig.update_layout(
-                        height=480, plot_bgcolor=RH_BG, paper_bgcolor=RH_BG,
+                        height=480, plot_bgcolor="#F5ECD7", paper_bgcolor="#EDE2C8",
                         font=dict(family='IBM Plex Mono', color=RH_MUTED, size=10),
                         xaxis_rangeslider_visible=False, showlegend=False,
                         margin=dict(l=10, r=10, t=10, b=10)
                     )
-                    fig.update_xaxes(gridcolor='rgba(58,53,48,0.5)', zeroline=False,
-                                      linecolor=RH_BORDER)
-                    fig.update_yaxes(gridcolor='rgba(58,53,48,0.5)', zeroline=False,
-                                      linecolor=RH_BORDER)
+                    fig.update_xaxes(gridcolor='rgba(139,26,26,0.1)', zeroline=False,
+                                      linecolor="rgba(139,26,26,0.2)")
+                    fig.update_yaxes(gridcolor='rgba(139,26,26,0.1)', zeroline=False,
+                                      linecolor="rgba(139,26,26,0.2)")
                     st.plotly_chart(fig, use_container_width=True,
                                      config={"displayModeBar": False})
 
