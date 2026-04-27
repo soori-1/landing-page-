@@ -14,8 +14,8 @@ import os, sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from theme import (
     apply_theme, render_header,
-    RH_GOLD, RH_GOLD_LIGHT, RH_GOLD_DIM, RH_RED, RH_GREEN,
-    RH_BG, RH_SURFACE, RH_TEXT, RH_MUTED, RH_BORDER
+    RH_MAROON, RH_MAROON_DK, RH_GOLD, RH_GOLD_LIGHT, RH_GOLD_DIM,
+    RH_RED, RH_GREEN, RH_BG, RH_SURFACE, RH_SURFACE2, RH_TEXT, RH_MUTED, RH_BORDER
 )
 
 st.set_page_config(layout="wide", page_title="RH | ETF Screener",
@@ -250,13 +250,15 @@ else:
         values='30D_Volume',
         color=metric_col,
         color_continuous_scale=[
-            [0.0, '#7F1D1D'],
-            [0.25, '#C0392B'],
-            [0.45, '#5A4A2A'],
-            [0.5,  '#2A2620'],
-            [0.55, '#5A5A2A'],
-            [0.75, '#2ECC71'],
-            [1.0,  '#0F6E2E'],
+            [0.0,  '#8B0000'],   # deep red  — large negative
+            [0.2,  '#CC3333'],   # red
+            [0.35, '#E8795A'],   # light red/salmon
+            [0.45, '#F5C4A8'],   # pale orange
+            [0.5,  '#F0EDE8'],   # near-white neutral
+            [0.55, '#B8D4B0'],   # pale green
+            [0.65, '#6DBF67'],   # light green
+            [0.8,  '#2E8B57'],   # green
+            [1.0,  '#1A5E2A'],   # deep green — large positive
         ],
         range_color=c_range,
         custom_data=['Name', '_pct']
@@ -265,24 +267,24 @@ else:
     fig.update_layout(
         height=560,
         margin=dict(t=10, l=5, r=5, b=5),
-        paper_bgcolor=RH_BG,
-        plot_bgcolor=RH_BG,
-        font=dict(family="IBM Plex Mono", color=RH_TEXT),
+        paper_bgcolor="#F5ECD7",
+        plot_bgcolor="#F5ECD7",
+        font=dict(family="IBM Plex Mono", color="#2C1810"),
         coloraxis_colorbar=dict(
-            title=dict(text="Return (%)", font=dict(size=10, color=RH_GOLD_DIM, family="IBM Plex Mono")),
-            thicknessmode="pixels", thickness=12,
-            lenmode="pixels", len=260,
+            title=dict(text="Return (%)", font=dict(size=10, color=RH_MAROON, family="IBM Plex Mono")),
+            thicknessmode="pixels", thickness=14,
+            lenmode="pixels", len=280,
             yanchor="top", y=1,
             ticks="outside",
             tickfont=dict(size=10, color=RH_MUTED, family="IBM Plex Mono"),
-            outlinecolor=RH_BORDER,
+            outlinecolor="rgba(139,26,26,0.2)",
         )
     )
 
     fig.update_traces(
         texttemplate="<b>%{label}</b><br>%{customdata[1]}",
-        textfont=dict(size=12, family="IBM Plex Mono", color=RH_TEXT),
-        marker_line_color=RH_BG,
+        textfont=dict(size=12, family="IBM Plex Mono", color="#1A1A1A"),
+        marker_line_color="#FFFFFF",
         marker_line_width=2,
         hovertemplate=(
             '<b>%{label}</b><br>'
