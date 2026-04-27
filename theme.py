@@ -278,53 +278,51 @@ def apply_theme():
 
 
 def render_header(subtitle: str = "Quantitative Scanner Suite", show_live: bool = True):
-    """
-    Brand header bar with Right Horizons logo.
-
-    Logo loading priority:
-      1. assets/logo.png  (place the logo file here in your repo)
-      2. logo.png         (project root fallback)
-      3. Text fallback    (if no image found)
-    """
+    """Brand header bar with Right Horizons logo."""
     import base64, os
 
     live_html = (
-        f"<span class='rh-live'><span class='rh-dot'></span>LIVE</span>"
+        "<span class='rh-live'><span class='rh-dot'></span>LIVE</span>"
         if show_live else ""
     )
 
-    # Try to find the logo file
-    root = os.path.dirname(os.path.abspath(__file__))
+    cwd    = os.getcwd()
+    here   = os.path.dirname(os.path.abspath(__file__))
+    parent = os.path.dirname(here)
+
     logo_candidates = [
-        os.path.join(root, "assets", "logo.png"),
-        os.path.join(root, "assets", "logo.jpg"),
-        os.path.join(root, "logo.png"),
-        os.path.join(root, "logo.jpg"),
+        os.path.join(cwd,    "logo.png"),
+        os.path.join(cwd,    "assets", "logo.png"),
+        os.path.join(here,   "logo.png"),
+        os.path.join(here,   "assets", "logo.png"),
+        os.path.join(parent, "logo.png"),
+        os.path.join(parent, "assets", "logo.png"),
+        os.path.join(cwd,    "logo.jpg"),
+        os.path.join(cwd,    "assets", "logo.jpg"),
     ]
     logo_path = next((p for p in logo_candidates if os.path.exists(p)), None)
 
     if logo_path:
-        # Encode to base64 so it works on any host without a static file server
         ext = "jpeg" if logo_path.endswith(".jpg") else "png"
         with open(logo_path, "rb") as f:
             b64 = base64.b64encode(f.read()).decode()
-        logo_html = f"""
-        <img src="data:image/{ext};base64,{b64}"
-             style="height:48px; width:auto; object-fit:contain;
-                    display:block; flex-shrink:0;"
-             alt="Right Horizons" />
-        """
-        brand_block = logo_html
+        # Build the img tag as a plain string — NOT inside the f-string below
+        # to avoid Python misinterpreting base64 characters as f-string syntax
+        img_tag = (
+            '<img src="data:image/' + ext + ';base64,' + b64 + '"'
+            ' style="height:52px;width:auto;object-fit:contain;display:block;"'
+            ' alt="Right Horizons" />'
+        )
     else:
-        # Text fallback while logo isn't uploaded yet
-        brand_block = f"<span class='rh-brand'>RIGHT HORIZONS</span>"
+        img_tag = "<span class='rh-brand'>RIGHT HORIZONS</span>"
 
-    st.markdown(f"""
-    <div class="rh-header">
-        <div style="display:flex; align-items:center; gap:14px; flex-shrink:0;">
-            {brand_block}
-            <span class="rh-brand-sub">{subtitle}</span>
-        </div>
-        {live_html}
-    </div>
-    """, unsafe_allow_html=True)
+    st.markdown(
+        '<div class="rh-header">'
+            '<div style="display:flex;align-items:center;gap:14px;flex-shrink:0;">'
+                + img_tag +
+                "<span class='rh-brand-sub'>" + subtitle + "</span>"
+            "</div>"
+            + live_html +
+        "</div>",
+        unsafe_allow_html=True
+    )
