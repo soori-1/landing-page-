@@ -1,6 +1,7 @@
 """
 Scanner 01 — Nifty 500 Breadth
-Synchronized price + breadth indicator with full zoom & range controls.
+Reads Nifty500_Master_Data.csv directly from GitHub (always latest).
+Cache TTL = 4 hours. Manual refresh button forces immediate re-fetch.
 """
 import streamlit as st
 import pandas as pd
@@ -12,8 +13,8 @@ import os, sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from theme import (
     apply_theme, render_header,
-    RH_GOLD, RH_GOLD_LIGHT, RH_GOLD_DIM, RH_RED, RH_GREEN,
-    RH_BG, RH_SURFACE, RH_TEXT, RH_MUTED, RH_BORDER
+    RH_MAROON, RH_MAROON_DK, RH_GOLD, RH_GOLD_LIGHT, RH_GOLD_DIM,
+    RH_RED, RH_GREEN, RH_BG, RH_SURFACE, RH_SURFACE2, RH_TEXT, RH_MUTED, RH_BORDER
 )
 
 st.set_page_config(layout="wide", page_title="RH | Breadth Scanner",
@@ -22,19 +23,36 @@ apply_theme()
 render_header("Scanner 01 · Nifty 500 Breadth")
 
 
-@st.cache_data(ttl=3600)
+# ─────────────────────────────────────────────────────
+#  DATA — reads directly from GitHub raw URL
+#  This means the CSV in nifty-breadth-pro repo is the
+#  single source of truth. No copying needed.
+# ─────────────────────────────────────────────────────
+GITHUB_CSV_URL = (
+    "https://raw.githubusercontent.com/soori-1/nifty-breadth-pro/main/Nifty500_Master_Data.csv"
+)
+
+
+@st.cache_data(ttl=1800, show_spinner=False)  # 30 min cache — refreshes shortly after 4PM Action
 def load_data():
+    # Try local file first (written by GitHub Action in this repo)
     root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     candidates = [
         os.path.join(root, "data", "Nifty500_Master_Data.csv"),
-        os.path.join(root, "Nifty500_Master_Data.csv"),
-        "Nifty500_Master_Data.csv",
+        os.path.join(os.getcwd(), "data", "Nifty500_Master_Data.csv"),
+        "data/Nifty500_Master_Data.csv",
     ]
     csv_path = next((p for p in candidates if os.path.exists(p)), None)
-    if not csv_path:
-        return pd.DataFrame()
 
-    df = pd.read_csv(csv_path)
+    if csv_path:
+        df = pd.read_csv(csv_path)
+    else:
+        # Fallback: fetch from old nifty-breadth-pro repo
+        try:
+            df = pd.read_csv(GITHUB_CSV_URL)
+        except Exception:
+            return pd.DataFrame()
+
     df['DATE'] = pd.to_datetime(df['DATE'])
     df = df.sort_values(by='DATE').reset_index(drop=True)
     df['NIFTY_500_CLOSE'] = df['NIFTY_500_CLOSE'].ffill()
@@ -47,13 +65,34 @@ def load_data():
     return df
 
 
-df = load_data()
+# ── REFRESH CONTROL ──
+col_r, col_ts = st.columns([1, 5])
+with col_r:
+    if st.button("⟳ REFRESH DATA", use_container_width=True, type="primary"):
+        st.cache_data.clear()
+        st.rerun()
+with col_ts:
+    pass  # timestamp shown after data loads
+
+with st.spinner("Loading breadth data from GitHub..."):
+    df = load_data()
 
 if df.empty:
-    st.error("Data not found. Place `Nifty500_Master_Data.csv` at the project root or in `/data`.")
+    st.error("Could not load data. Check that `Nifty500_Master_Data.csv` exists in the nifty-breadth-pro repo.")
     if st.button("← BACK TO HUB", key="back_top"):
         st.switch_page("Home.py")
     st.stop()
+
+# Show latest date so user knows how fresh the data is
+latest_date = df['DATE'].max().strftime('%d %b %Y')
+st.markdown(
+    f"<div style='font-family:IBM Plex Mono; font-size:10px; color:{RH_MUTED}; "
+    f"letter-spacing:0.12em; text-transform:uppercase; margin-bottom:12px;'>"
+    f"Data as of <strong style='color:{RH_GOLD};'>{latest_date}</strong> · "
+    f"{len(df):,} trading days loaded</div>",
+    unsafe_allow_html=True
+)
+
 
 latest, prev = df.iloc[-1], df.iloc[-2]
 
@@ -133,7 +172,7 @@ fig = make_subplots(
 
 fig.add_trace(go.Scattergl(
     x=df_plot['DATE'], y=df_plot['NIFTY_500_CLOSE'], name="Nifty 500",
-    line=dict(color=RH_GOLD_LIGHT, width=1.8),
+    line=dict(color=RH_MAROON, width=1.8),
     fill='tozeroy', fillcolor='rgba(184,136,26,0.06)',
     hovertemplate='<b>%{y:,.2f}</b><extra></extra>'
 ), row=1, col=1)
@@ -180,10 +219,10 @@ else:
     ind_label = "52-WEEK LOWS"
 
 fig.update_layout(
-    height=700, plot_bgcolor=RH_BG, paper_bgcolor=RH_BG,
+    height=700, plot_bgcolor="#F5ECD7", paper_bgcolor="#EDE2C8",
     font=dict(color=RH_TEXT, family="IBM Plex Mono", size=11),
     hovermode="x unified",
-    hoverlabel=dict(bgcolor=RH_SURFACE, bordercolor=RH_GOLD_DIM,
+    hoverlabel=dict(bgcolor="#FFFFFF", bordercolor=RH_MAROON,
                     font=dict(family="IBM Plex Mono", color=RH_TEXT, size=11)),
     showlegend=False, margin=dict(l=10, r=10, t=20, b=10),
     dragmode="zoom",
@@ -191,27 +230,27 @@ fig.update_layout(
 )
 
 fig.update_xaxes(
-    showgrid=True, gridwidth=0.5, gridcolor='rgba(58,53,48,0.4)',
-    showspikes=True, spikecolor=RH_GOLD_DIM, spikesnap="cursor",
+    showgrid=True, gridwidth=0.5, gridcolor='rgba(139,26,26,0.1)',
+    showspikes=True, spikecolor=RH_MAROON, spikesnap="cursor",
     spikemode="across", spikethickness=1, spikedash='solid',
-    tickfont=dict(color=RH_MUTED, size=9, family='IBM Plex Mono'),
-    zeroline=False, linecolor=RH_BORDER, linewidth=1,
-    rangeslider=dict(visible=True, thickness=0.06, bgcolor=RH_SURFACE,
-                     bordercolor=RH_GOLD_DIM, borderwidth=1),
+    tickfont=dict(color='#8B6A4A', size=9, family='IBM Plex Mono'),
+    zeroline=False, linecolor="rgba(139,26,26,0.2)", linewidth=1,
+    rangeslider=dict(visible=True, thickness=0.06, bgcolor="#F5ECD7",
+                     bordercolor=RH_MAROON, borderwidth=1),
     row=2, col=1
 )
 fig.update_xaxes(
-    showgrid=True, gridwidth=0.5, gridcolor='rgba(58,53,48,0.4)',
-    showspikes=True, spikecolor=RH_GOLD_DIM, spikesnap="cursor",
+    showgrid=True, gridwidth=0.5, gridcolor='rgba(139,26,26,0.1)',
+    showspikes=True, spikecolor=RH_MAROON, spikesnap="cursor",
     spikemode="across", spikethickness=1, spikedash='solid',
-    showticklabels=False, zeroline=False, linecolor=RH_BORDER, linewidth=1,
+    showticklabels=False, zeroline=False, linecolor="rgba(139,26,26,0.2)", linewidth=1,
     row=1, col=1
 )
 fig.update_yaxes(
-    showgrid=True, gridwidth=0.5, gridcolor='rgba(58,53,48,0.4)',
-    showspikes=True, spikecolor=RH_GOLD_DIM, spikethickness=1,
-    tickfont=dict(color=RH_MUTED, size=9, family='IBM Plex Mono'),
-    zeroline=False, linecolor=RH_BORDER, linewidth=1
+    showgrid=True, gridwidth=0.5, gridcolor='rgba(139,26,26,0.1)',
+    showspikes=True, spikecolor=RH_MAROON, spikethickness=1,
+    tickfont=dict(color='#8B6A4A', size=9, family='IBM Plex Mono'),
+    zeroline=False, linecolor="rgba(139,26,26,0.2)", linewidth=1
 )
 fig.update_yaxes(range=[price_min, price_max], row=1, col=1)
 
