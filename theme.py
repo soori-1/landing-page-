@@ -173,8 +173,38 @@ def apply_theme():
         background: {RH_MAROON} !important;
         border: 2px solid {RH_GOLD} !important;
     }}
-    [data-testid="stSidebar"] [data-testid="stSidebarCollapseButton"] {{
-        color: {RH_GOLD_LIGHT} !important;
+    /* ── SIDEBAR INTERNAL COLLAPSE BUTTON (the arrow inside the sidebar) ── */
+    [data-testid="stSidebarCollapseButton"] button,
+    [data-testid="stSidebar"] [data-testid="stSidebarCollapseButton"],
+    [data-testid="stSidebar"] button[kind="header"] {{
+        background: rgba(255,255,255,0.15) !important;
+        border: 1px solid rgba(200,146,42,0.6) !important;
+        border-radius: 0 !important;
+        color: {RH_BG} !important;
+        width: 100% !important;
+        padding: 8px 12px !important;
+        margin-bottom: 8px !important;
+    }}
+    [data-testid="stSidebar"] [data-testid="stSidebarCollapseButton"] *,
+    [data-testid="stSidebar"] button[kind="header"] * {{
+        font-size: 0 !important;
+        color: transparent !important;
+    }}
+    [data-testid="stSidebar"] [data-testid="stSidebarCollapseButton"]::after,
+    [data-testid="stSidebar"] button[kind="header"]::after {{
+        content: "✕  CLOSE SIDEBAR" !important;
+        font-family: 'IBM Plex Mono', monospace !important;
+        font-size: 11px !important;
+        font-weight: 600 !important;
+        color: {RH_BG} !important;
+        letter-spacing: 0.14em !important;
+        display: inline-block !important;
+        line-height: 1 !important;
+    }}
+    [data-testid="stSidebar"] [data-testid="stSidebarCollapseButton"]:hover,
+    [data-testid="stSidebar"] button[kind="header"]:hover {{
+        background: rgba(255,255,255,0.25) !important;
+        cursor: pointer !important;
     }}
 
     /* ── BRAND HEADER ── */
