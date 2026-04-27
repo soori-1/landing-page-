@@ -1,0 +1,39 @@
+name: Update Nifty 500 Breadth Data
+
+on:
+  # Runs Mon–Fri at 4:00 PM IST (10:30 UTC) — 30 min after NSE closes
+  schedule:
+    - cron: '30 10 * * 1-5'
+
+  # Manual trigger from Actions tab
+  workflow_dispatch:
+
+jobs:
+  update-breadth:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install yfinance pandas requests
+
+      - name: Run breadth update
+        run: python update_breadth.py
+
+      - name: Commit and push updated CSV
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/Nifty500_Master_Data.csv
+          git diff --staged --quiet || git commit -m "Auto-update breadth data $(date +'%Y-%m-%d')"
+          git push
