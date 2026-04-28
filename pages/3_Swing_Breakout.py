@@ -245,10 +245,10 @@ st.markdown(f"""
 
 
 # ═══════════════════════════════════════════════════════════════
-#  WATCHLIST — 1,746 NSE stocks above ₹500 Cr market cap
+#  WATCHLIST + SECTOR MAP
 # ═══════════════════════════════════════════════════════════════
 WATCHLIST = [
-    "STLTECH.NS","NEUEON.NS","MTARTECH.NS","PRIZOR.NS","OMNI.NS","ATLANTAELE.NS","QPOWER.NS","DEEDEV.NS","KSHINTL.NS","KRN.NS",
+  "STLTECH.NS","NEUEON.NS","MTARTECH.NS","PRIZOR.NS","OMNI.NS","ATLANTAELE.NS","QPOWER.NS","DEEDEV.NS","KSHINTL.NS","KRN.NS",
     "GVPIL.NS","BAJAJCON.NS","POWERINDIA.NS","KAPSTON.NS","VIDYAWIRES.NS","PRECWIRE.NS","BHAGYANGR.NS","AVANTIFEED.NS","UNIHEALTH.NS","SUNLITE.NS",
     "APEX.NS","DPEL.NS","BLISSGVS.NS","SPORTKING.NS","ANTELOPUS.NS","NGLFINE.NS","ROSSTECH.NS","GALLANTT.NS","SCHNEIDER.NS","INA.NS",
     "LOKESHMACH.NS","TDPOWERSYS.NS","CONFIPET.NS","PARKHOSPS.NS","UFBL.NS","HFCL.NS","CPPLUS.NS","DBOL.NS","INDOTECH.NS","SANSERA.NS",
@@ -425,12 +425,44 @@ WATCHLIST = [
     "KIRIINDUS.NS","MAPMYINDIA.NS","FINOPB.NS","RELINFRA.NS","RMDRIP.NS","AQYLON.NS",
 ]
 
+SECTOR_MAP = {
+    "RELIANCE.NS":"Energy","TCS.NS":"IT","HDFCBANK.NS":"Banking","INFY.NS":"IT",
+    "ICICIBANK.NS":"Banking","HINDUNILVR.NS":"FMCG","SBIN.NS":"Banking",
+    "BAJFINANCE.NS":"Finance","BHARTIARTL.NS":"Telecom","KOTAKBANK.NS":"Banking",
+    "AXISBANK.NS":"Banking","LT.NS":"Infra","HCLTECH.NS":"IT","ASIANPAINT.NS":"Consumer",
+    "WIPRO.NS":"IT","MARUTI.NS":"Auto","SUNPHARMA.NS":"Pharma","TITAN.NS":"Consumer",
+    "ULTRACEMCO.NS":"Cement","NESTLEIND.NS":"FMCG","ONGC.NS":"Energy",
+    "POWERGRID.NS":"Energy","NTPC.NS":"Energy","TECHM.NS":"IT","BAJAJFINSV.NS":"Finance",
+    "TATAMOTORS.NS":"Auto","DRREDDY.NS":"Pharma","DIVISLAB.NS":"Pharma",
+    "CIPLA.NS":"Pharma","ADANIPORTS.NS":"Infra","COALINDIA.NS":"Energy",
+    "GRASIM.NS":"Cement","HINDALCO.NS":"Metal","JSWSTEEL.NS":"Metal",
+    "TATASTEEL.NS":"Metal","BPCL.NS":"Energy","IOC.NS":"Energy","HEROMOTOCO.NS":"Auto",
+    "EICHERMOT.NS":"Auto","BAJAJ-AUTO.NS":"Auto","BRITANNIA.NS":"FMCG",
+    "DABUR.NS":"FMCG","MARICO.NS":"FMCG","COLPAL.NS":"FMCG","GODREJCP.NS":"FMCG",
+    "PIDILITIND.NS":"Consumer","BERGEPAINT.NS":"Consumer","HAVELLS.NS":"Consumer",
+    "VOLTAS.NS":"Consumer","ITC.NS":"FMCG","PERSISTENT.NS":"IT","MPHASIS.NS":"IT",
+    "LTIM.NS":"IT","COFORGE.NS":"IT","ZOMATO.NS":"Consumer","IRCTC.NS":"Consumer",
+    "INDHOTEL.NS":"Consumer","RVNL.NS":"Infra","IRFC.NS":"Finance","RECLTD.NS":"Finance",
+    "PFC.NS":"Finance","BANKBARODA.NS":"Banking","CANBK.NS":"Banking","PNB.NS":"Banking",
+    "FEDERALBNK.NS":"Banking","IDFCFIRSTB.NS":"Banking","INDUSINDBK.NS":"Banking",
+    "AUBANK.NS":"Banking","CHOLAFIN.NS":"Finance","MUTHOOTFIN.NS":"Finance",
+    "APOLLOHOSP.NS":"Pharma","FORTIS.NS":"Pharma","AUROPHARMA.NS":"Pharma",
+    "LUPIN.NS":"Pharma","TORNTPHARM.NS":"Pharma","TATAPOWER.NS":"Energy",
+    "ADANIGREEN.NS":"Energy","NAUKRI.NS":"IT","INDIGO.NS":"Consumer","OFSS.NS":"IT",
+    "DIXON.NS":"Consumer","TATACONSUM.NS":"FMCG","MOTHERSON.NS":"Auto",
+    "BALKRISIND.NS":"Auto","DMART.NS":"Consumer","ABCAPITAL.NS":"Finance",
+    "MFSL.NS":"Finance","SBICARD.NS":"Finance","HDFCAMC.NS":"Finance","NIPPONLIFE.NS":"Finance",
+    "ANGELONE.NS":"Finance","ICICIPRULI.NS":"Finance","HDFCLIFE.NS":"Finance",
+    "360ONE.NS":"Finance","MOTILALOFS.NS":"Finance","ICICIGI.NS":"Finance",
+    "STARHEALTH.NS":"Finance","NUVAMA.NS":"Finance",
+    "HAL.NS":"Defence","BEL.NS":"Defence","BHEL.NS":"Infra","COCHINSHIP.NS":"Defence",
+    "CGPOWER.NS":"CapGoods","SIEMENS.NS":"CapGoods","ABB.NS":"CapGoods",
+    "CUMMINSIND.NS":"CapGoods","THERMAX.NS":"CapGoods",
+    "TRENT.NS":"Consumer","KALYANKJIL.NS":"Consumer","VBL.NS":"FMCG",
+    "KPITTECH.NS":"IT","SUPREMEIND.NS":"Consumer","GRINDWELL.NS":"CapGoods",
+    "TIMKEN.NS":"CapGoods","SCHAEFFLER.NS":"CapGoods",
+}
 
-def get_live_watchlist():
-    """Returns the static watchlist. Kept for compatibility."""
-    return list(WATCHLIST)
-
-# Sector colors
 # Sector colors retuned to gold/dark complementary palette
 SECTOR_COLORS = {
     "Banking":"#4A7A8B", "IT":"#8E6FD8", "FMCG":"#D4A442", "Finance":"#7A8B3F",
@@ -612,41 +644,21 @@ def find_valid_resistance(df, swing_highs, threshold_atr_mult=1.5,
 @st.cache_data(ttl=1800, show_spinner=False)
 def batch_download_prices():
     """
-    Download 2Y daily OHLCV in chunks of 500 to avoid Yahoo Finance rate limits.
-    Merges all chunks into one combined DataFrame.
+    Download 2Y daily OHLCV for the entire Nifty 500 in ONE API call.
+    yf.download() is ~10x faster than 500 individual Ticker.history() calls.
     Cached for 30 min — shared between approaching + breakout scans.
     """
     import yfinance as yf
-    import time
-
-    tickers = get_live_watchlist()
-    chunk_size = 400  # safe limit per batch call
-    chunks = [tickers[i:i+chunk_size] for i in range(0, len(tickers), chunk_size)]
-    combined = None
-
-    for idx, chunk in enumerate(chunks):
-        try:
-            data = yf.download(
-                chunk,
-                period="2y",
-                interval="1d",
-                auto_adjust=True,
-                progress=False,
-                group_by="ticker",
-                threads=True,
-            )
-            if data is not None and not data.empty:
-                if combined is None:
-                    combined = data
-                else:
-                    # Merge on the same date index
-                    combined = combined.join(data, how='outer')
-        except Exception as e:
-            pass  # skip failed chunk, continue
-        if idx < len(chunks) - 1:
-            time.sleep(1.5)  # brief pause between chunks
-
-    return combined if combined is not None else __import__('pandas').DataFrame()
+    data = yf.download(
+        WATCHLIST,
+        period="2y",
+        interval="1d",
+        auto_adjust=True,
+        progress=False,
+        group_by="ticker",
+        threads=True,        # yfinance internal threading
+    )
+    return data
 
 
 @st.cache_data(ttl=1800, show_spinner=False)
@@ -667,7 +679,7 @@ def batch_download_mcap():
 
     mcap_map = {}
     with ThreadPoolExecutor(max_workers=30) as ex:
-        futures = {ex.submit(_get_mcap, sym): sym for sym in get_live_watchlist()}
+        futures = {ex.submit(_get_mcap, sym): sym for sym in WATCHLIST}
         for fut in as_completed(futures):
             sym, mcap = fut.result()
             mcap_map[sym] = mcap
@@ -695,8 +707,7 @@ def run_approaching(lookback, min_mcap, threshold_atr):
     mcap_map = batch_download_mcap()
 
     results = []
-    watchlist = get_live_watchlist()
-    for sym in watchlist:
+    for sym in WATCHLIST:
         try:
             mcap_cr = mcap_map.get(sym, 0)
             if mcap_cr < min_mcap:
@@ -747,8 +758,7 @@ def run_breakouts(lookback, min_mcap, days_back=5):
     mcap_map = batch_download_mcap()
 
     results = []
-    watchlist = get_live_watchlist()
-    for sym in watchlist:
+    for sym in WATCHLIST:
         try:
             mcap_cr = mcap_map.get(sym, 0)
             if mcap_cr < min_mcap:
@@ -840,8 +850,6 @@ with st.sidebar:
     lookback      = st.slider("Swing lookback", 5, 15, 10)
     min_mcap      = st.slider("Min market cap (₹ Cr)", 500, 10000, 500, 250)
     days_back     = st.slider("Breakout window (days)", 1, 10, 5, 1)
-    use_rs_filter = st.checkbox("Relative Strength filter", value=True,
-                                 help="Only show stocks outperforming Nifty 3M. Uncheck when market is in Risk-Off.")
 
     st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
     run_btn = st.button("RUN SCREEN", use_container_width=True, type="primary")
@@ -876,7 +884,7 @@ if "sw_breakouts" not in st.session_state: st.session_state.sw_breakouts = None
 if "sw_risk_on"   not in st.session_state: st.session_state.sw_risk_on = True
 
 if run_btn:
-    with st.spinner("Fetching NSE universe · scanning signals · ~90–120 sec…"):
+    with st.spinner("Downloading Nifty 500 data in batch · scanning signals · ~60–90 sec…"):
         st.session_state.sw_results,   st.session_state.sw_risk_on = run_approaching(
             lookback, min_mcap, threshold_atr
         )
@@ -1299,7 +1307,7 @@ with tab3:
         </div>
     </div>""", unsafe_allow_html=True)
 
-    all_symbols = sorted([s.replace(".NS", "") for s in get_live_watchlist()])
+    all_symbols = sorted([s.replace(".NS", "") for s in WATCHLIST])
     bt_symbol = st.selectbox(
         "Stock to validate", all_symbols, key="bt_sym",
         index=all_symbols.index("TITAN") if "TITAN" in all_symbols else 0
