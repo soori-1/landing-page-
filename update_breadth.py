@@ -12,7 +12,7 @@ import yfinance as yf
 import pandas as pd
 import os
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
 
 OUTPUT_DIR  = "data"
 OUTPUT_FILE = os.path.join(OUTPUT_DIR, "Nifty500_Master_Data.csv")
@@ -34,17 +34,21 @@ def get_tickers():
 
 def run_update():
     os.makedirs(OUTPUT_DIR, exist_ok=True)
-    end_date = datetime.now().strftime('%Y-%m-%d')
+    today    = datetime.now()
+    # yfinance end date is EXCLUSIVE — pass tomorrow to include today's data
+    end_date = (today + timedelta(days=1)).strftime('%Y-%m-%d')
     print(f"\n{'='*55}")
-    print(f"  Nifty 500 Breadth Update — {end_date}")
+    print(f"  Nifty 500 Breadth Update — {today.strftime('%Y-%m-%d')}")
     print(f"{'='*55}")
 
     # ── STEP 1: Nifty 500 Index price ─────────────────────
     print("\n[1/4] Downloading Nifty 500 index price...")
-    idx_raw = yf.download("^CRSLDX", start=START_DATE, end=end_date, progress=False)
+    idx_raw = yf.download("^CRSLDX", start=START_DATE, end=end_date,
+                           progress=False, auto_adjust=True)
     if idx_raw.empty:
         print("  ^CRSLDX failed, falling back to ^NSEI (Nifty 50)...")
-        idx_raw = yf.download("^NSEI", start=START_DATE, end=end_date, progress=False)
+        idx_raw = yf.download("^NSEI", start=START_DATE, end=end_date,
+                               progress=False, auto_adjust=True)
 
     if isinstance(idx_raw.columns, pd.MultiIndex):
         nifty_series = idx_raw['Close'].iloc[:, 0]
