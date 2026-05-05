@@ -30,7 +30,6 @@ render_header("Scanner 06 · Liquid ETF Screener")
 def super_category(cat: str) -> str:
     if cat.startswith("US Equity"):       return "🇺🇸 US Equity"
     if cat.startswith("Factor"):           return "📊 Factor / Smart Beta"
-    if cat.startswith("Fixed Income"):     return "🏦 Fixed Income"
     if cat.startswith("Commodities"):      return "🪙 Commodities"
     if cat.startswith("Alternatives"):     return "🔀 Alternatives"
     if cat.startswith("Thematic"):         return "🚀 Thematic"
