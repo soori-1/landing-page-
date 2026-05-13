@@ -63,8 +63,10 @@ st.markdown("""
 def load_data():
     # Look for CSV next to this file, or in parent (repo root)
     search_paths = [
-        Path(__file__).parent / "fii_dii_checkpoint.csv",
+        Path(__file__).parent.parent / "data" / "fii_dii_checkpoint.csv",
         Path(__file__).parent.parent / "fii_dii_checkpoint.csv",
+        Path(__file__).parent / "fii_dii_checkpoint.csv",
+        Path("data") / "fii_dii_checkpoint.csv",
         Path("fii_dii_checkpoint.csv"),
     ]
     csv_path = None
@@ -364,7 +366,7 @@ with st.expander("📋 Raw Data Table", expanded=False):
     )
 
 st.markdown(
-    f"<div class='note'>Data: fii_dii_checkpoint.csv · Auto-updated daily via GitHub Actions · "
+    f"<div class='note'>Data: data/fii_dii_checkpoint.csv · Auto-updated daily via GitHub Actions · "
     f"Rows: {parsed_count}</div>",
     unsafe_allow_html=True
 )
