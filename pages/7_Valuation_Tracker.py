@@ -464,15 +464,21 @@ def render_single_index(sheet_name):
                                   name="EPS CAGR"))
         fig.update_layout(
             plot_bgcolor=RH_BG, paper_bgcolor=RH_SURFACE2,
-            font=dict(family="IBM Plex Mono", color=RH_MUTED, size=10),
+            font=dict(family="IBM Plex Mono", color="#2C1810", size=11),
             hoverlabel=dict(bgcolor="#FFFFFF", bordercolor=RH_MAROON,
                             font=dict(family="IBM Plex Mono", color=RH_TEXT)),
             height=380, margin=dict(l=40, r=20, t=20, b=40),
-            yaxis=dict(title="CAGR (%)", tickformat=".1f"),
-            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+            yaxis=dict(title="CAGR (%)", tickformat=".1f",
+                       tickfont=dict(family="IBM Plex Mono", size=11, color="#2C1810"),
+                       title_font=dict(family="IBM Plex Mono", size=11, color="#2C1810")),
+            xaxis=dict(tickfont=dict(family="IBM Plex Mono", size=11, color="#2C1810")),
+            legend=dict(
+                orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1,
+                font=dict(family="IBM Plex Mono", size=10, color="#2C1810"),
+            ),
         )
         fig.update_xaxes(gridcolor='rgba(139,26,26,0.1)', zeroline=False)
-        fig.update_yaxes(gridcolor='rgba(139,26,26,0.1)', zeroline=True, zerolinecolor=RH_MUTED)
+        fig.update_yaxes(gridcolor='rgba(139,26,26,0.1)', zeroline=True, zerolinecolor="#8B6A4A")
         st.plotly_chart(fig, use_container_width=True)
 
     # ── P/E ratio band chart (mean ± 1 SD) ──
@@ -530,12 +536,20 @@ def render_single_index(sheet_name):
         ))
         pe_fig.update_layout(
             plot_bgcolor=RH_BG, paper_bgcolor=RH_SURFACE2,
-            font=dict(family="IBM Plex Mono", color=RH_MUTED, size=10),
+            font=dict(family="IBM Plex Mono", color="#2C1810", size=11),
             hoverlabel=dict(bgcolor="#FFFFFF", bordercolor=RH_MAROON,
                             font=dict(family="IBM Plex Mono", color=RH_TEXT)),
             height=360, margin=dict(l=40, r=20, t=20, b=40),
-            yaxis=dict(title="P/E Ratio"),
-            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+            yaxis=dict(
+                title="P/E Ratio",
+                tickfont=dict(family="IBM Plex Mono", size=11, color="#2C1810"),
+                title_font=dict(family="IBM Plex Mono", size=11, color="#2C1810"),
+            ),
+            xaxis=dict(tickfont=dict(family="IBM Plex Mono", size=11, color="#2C1810")),
+            legend=dict(
+                orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1,
+                font=dict(family="IBM Plex Mono", size=10, color="#2C1810"),
+            ),
         )
         pe_fig.update_xaxes(gridcolor='rgba(139,26,26,0.1)', zeroline=False)
         pe_fig.update_yaxes(gridcolor='rgba(139,26,26,0.1)')
@@ -662,13 +676,15 @@ def render_heatmap():
         ],
         zmid=0,
         hovertemplate="<b>%{y}</b><br>Year: %{x}<br>Spread: %{z:+.1f}%<extra></extra>",
-        colorbar=dict(title="Spread %", tickfont=dict(color=RH_MUTED, family="IBM Plex Mono", size=9)),
+        colorbar=dict(title="Spread %", tickfont=dict(color="#2C1810", family="IBM Plex Mono", size=10)),
     ))
     fig.update_layout(
         plot_bgcolor=RH_BG, paper_bgcolor=RH_SURFACE2,
-        font=dict(family="IBM Plex Mono", color=RH_MUTED, size=9),
+        font=dict(family="IBM Plex Mono", color="#2C1810", size=10),
         height=max(500, 22 * len(rows)),
         margin=dict(l=140, r=40, t=20, b=40),
+        xaxis=dict(tickfont=dict(family="IBM Plex Mono", size=11, color="#2C1810")),
+        yaxis=dict(tickfont=dict(family="IBM Plex Mono", size=11, color="#2C1810")),
     )
     st.plotly_chart(fig, use_container_width=True)
 
@@ -817,10 +833,20 @@ def render_divergence():
 
     fig.update_layout(
         plot_bgcolor=RH_BG, paper_bgcolor=RH_SURFACE2,
-        font=dict(family="IBM Plex Mono", color=RH_MUTED, size=10),
+        font=dict(family="IBM Plex Mono", color="#2C1810", size=11),
         height=600, margin=dict(l=60, r=20, t=20, b=50),
-        xaxis=dict(title="EPS CAGR (%) — earnings growth", gridcolor='rgba(139,26,26,0.1)', zeroline=True, zerolinecolor=RH_MUTED),
-        yaxis=dict(title="Price CAGR (%) — index return", gridcolor='rgba(139,26,26,0.1)', zeroline=True, zerolinecolor=RH_MUTED),
+        xaxis=dict(
+            title="EPS CAGR (%) — earnings growth",
+            gridcolor='rgba(139,26,26,0.1)', zeroline=True, zerolinecolor="#8B6A4A",
+            tickfont=dict(family="IBM Plex Mono", size=11, color="#2C1810"),
+            title_font=dict(family="IBM Plex Mono", size=11, color="#2C1810"),
+        ),
+        yaxis=dict(
+            title="Price CAGR (%) — index return",
+            gridcolor='rgba(139,26,26,0.1)', zeroline=True, zerolinecolor="#8B6A4A",
+            tickfont=dict(family="IBM Plex Mono", size=11, color="#2C1810"),
+            title_font=dict(family="IBM Plex Mono", size=11, color="#2C1810"),
+        ),
     )
     st.plotly_chart(fig, use_container_width=True)
 
@@ -873,22 +899,23 @@ def render_qoq_heatmap():
     metric_key = {"Price QoQ %": "close", "EPS QoQ %": "eps", "P/E QoQ %": "pe"}[metric]
     metric_label = metric
 
+    # Color scale clamp — keeps normal cells readable even when outliers exist.
+    # Real values always shown as text; cells beyond clamp get ⚡ flag.
+    CLAMP = {"Price QoQ %": 30, "EPS QoQ %": 80, "P/E QoQ %": 50}[metric]
+
     st.markdown(f"""<div style='font-size:11px;color:{RH_TEXT};background:{RH_SURFACE};
     border-left:3px solid {RH_GOLD};padding:12px 16px;margin-bottom:18px;line-height:1.6;'>
     <b style='color:{RH_MAROON};'>How to read this:</b>
-    Each cell shows the <b>{metric_label}</b> for that quarter vs the previous quarter.
-    8 quarters shown — most recent on the right.
+    Each cell shows <b>{metric_label}</b> vs the previous quarter. 8 quarters, most recent on the right.
+    Rows sorted by latest quarter — hottest at the top.
     <br><br>
-    &nbsp;&nbsp;<b style='color:{RH_GREEN};'>Green</b> = grew vs prior quarter &nbsp;|&nbsp;
-    <b style='color:{RH_RED};'>Red</b> = shrank vs prior quarter &nbsp;|&nbsp;
-    White = roughly flat
-    <br><br>
-    Read across a row to see a sector's momentum story. Read down a column to compare
-    which sectors were hot or cold in the same quarter.
+    &nbsp;&nbsp;<b style='color:{RH_GREEN};'>Green</b> = grew &nbsp;|&nbsp;
+    <b style='color:{RH_RED};'>Red</b> = shrank &nbsp;|&nbsp;
+    White = flat &nbsp;|&nbsp;
+    <b style='color:#7B2FBE;'>⚡ Purple</b> = extreme outlier (beyond ±{CLAMP}% colour scale — real value shown)
     </div>""", unsafe_allow_html=True)
 
     # ── Build the matrix ──
-    # Collect the last 9 quarterly snapshots per index (need 9 to compute 8 QoQ changes)
     ALL_QUARTERS = set()
     index_data = {}
 
@@ -896,11 +923,9 @@ def render_qoq_heatmap():
         snaps = data["indices"].get(ix["sheet_name"], {}).get("snapshots", [])
         if not snaps:
             continue
-        # Go back far enough to always get 8 complete quarters
         quarterly = quarterly_snapshots(snaps, start_year=2020)
         if len(quarterly) < 2:
             continue
-
         row = {}
         for i in range(1, len(quarterly)):
             prev, curr = quarterly[i-1], quarterly[i]
@@ -913,7 +938,6 @@ def render_qoq_heatmap():
                 label = f"{dt.year}-Q{q}"
                 row[label] = round(pct_chg, 1)
                 ALL_QUARTERS.add(label)
-
         if row:
             index_data[ix["display"]] = row
 
@@ -921,7 +945,6 @@ def render_qoq_heatmap():
         st.warning("Not enough quarterly data yet. Run `reconstruct_valuation_history.py` to backfill.")
         return
 
-    # Build DataFrame — sorted columns, last 8
     all_q_sorted = sorted(ALL_QUARTERS)
     if len(all_q_sorted) > 8:
         all_q_sorted = all_q_sorted[-8:]
@@ -931,9 +954,8 @@ def render_qoq_heatmap():
         r = {"Index": display_name}
         for q in all_q_sorted:
             r[q] = row.get(q, None)
-        # Only include if has data in at least half the quarters
         non_null = sum(1 for q in all_q_sorted if r.get(q) is not None)
-        if non_null >= len(all_q_sorted) // 2:
+        if non_null >= max(1, len(all_q_sorted) // 2):
             rows.append(r)
 
     if not rows:
@@ -943,54 +965,92 @@ def render_qoq_heatmap():
     df = pd.DataFrame(rows).set_index("Index")
     df = df[all_q_sorted]
 
-    # Sort rows by latest-quarter value descending so hottest sectors are at top
     latest_q = all_q_sorted[-1]
     df = df.sort_values(latest_q, ascending=False, na_position="last")
 
-    z = df.values.tolist()
-    text = [[f"{v:+.1f}%" if v is not None and not (isinstance(v, float) and pd.isna(v)) else ""
-             for v in row] for row in z]
+    # ── Build clamped z matrix + annotated text ──
+    # z_clamped: values clipped to ±CLAMP for color only
+    # z_real: original values kept for hover
+    # text_labels: show real value, flag outliers with ⚡
+    z_real    = df.values.tolist()
+    z_clamped = []
+    text_labels = []
 
-    # Dynamic height — taller rows for readability
-    row_height = 28
-    chart_height = max(550, row_height * len(df) + 100)
+    for row in z_real:
+        z_row, t_row = [], []
+        for v in row:
+            if v is None or (isinstance(v, float) and pd.isna(v)):
+                z_row.append(None)
+                t_row.append("")
+            else:
+                is_outlier = abs(v) > CLAMP
+                z_row.append(float(np.clip(v, -CLAMP, CLAMP)))
+                label = f"⚡{v:+.0f}%" if is_outlier else f"{v:+.1f}%"
+                t_row.append(label)
+        z_clamped.append(z_row)
+        text_labels.append(t_row)
+
+    row_height = 30
+    chart_height = max(580, row_height * len(df) + 120)
 
     fig = go.Figure(data=go.Heatmap(
-        z=z,
+        z=z_clamped,
+        customdata=z_real,
         x=list(df.columns),
         y=list(df.index),
-        text=text,
+        text=text_labels,
         texttemplate="%{text}",
-        textfont={"family": "IBM Plex Mono", "size": 9, "color": "white"},
+        textfont={"family": "IBM Plex Mono", "size": 10, "color": "#1A1A1A"},
         colorscale=[
-            [0.0,  RH_RED],
-            [0.4,  "#E78878"],
-            [0.5,  "#FFFFFF"],
-            [0.6,  "#7FB97F"],
-            [1.0,  RH_GREEN],
+            [0.0,   "#C0392B"],   # strong red
+            [0.35,  "#E8A090"],   # light red
+            [0.5,   "#F8F4EE"],   # near-white (neutral)
+            [0.65,  "#90C090"],   # light green
+            [1.0,   "#2E7D32"],   # strong green
         ],
-        zmid=0,
-        hovertemplate="<b>%{y}</b><br>%{x}<br>" + metric_label + ": %{z:+.1f}%<extra></extra>",
+        zmin=-CLAMP,
+        zmax=CLAMP,
+        hovertemplate=(
+            "<b>%{y}</b><br>"
+            "%{x}<br>"
+            + metric_label + ": <b>%{customdata:+.1f}%</b><br>"
+            "<i>(colour clamped at ±" + str(CLAMP) + "%)</i>"
+            "<extra></extra>"
+        ),
         colorbar=dict(
-            title=dict(text=metric_label, font=dict(family="IBM Plex Mono", size=9, color=RH_MUTED)),
-            tickfont=dict(color=RH_MUTED, family="IBM Plex Mono", size=9),
-            thickness=12, len=0.8,
+            title=dict(
+                text=f"{metric_label}<br><span style='font-size:8px'>clamped ±{CLAMP}%</span>",
+                font=dict(family="IBM Plex Mono", size=10, color="#2C1810"),
+            ),
+            tickfont=dict(color="#2C1810", family="IBM Plex Mono", size=10),
+            tickformat="+d",
+            ticksuffix="%",
+            thickness=14,
+            len=0.85,
+            outlinecolor="#2C1810",
+            outlinewidth=1,
         ),
     ))
     fig.update_layout(
-        plot_bgcolor=RH_BG,
-        paper_bgcolor=RH_SURFACE2,
-        font=dict(family="IBM Plex Mono", color=RH_MUTED, size=9),
+        plot_bgcolor="#F5ECD7",
+        paper_bgcolor="#EDE2C8",
+        font=dict(family="IBM Plex Mono", color="#2C1810", size=10),
         height=chart_height,
-        margin=dict(l=160, r=60, t=30, b=60),
+        margin=dict(l=170, r=80, t=50, b=30),
         xaxis=dict(
             side="top",
-            tickfont=dict(family="IBM Plex Mono", size=10, color=RH_TEXT),
+            tickfont=dict(family="IBM Plex Mono", size=11, color="#2C1810"),
             tickangle=0,
+            title_font=dict(color="#2C1810"),
+            linecolor="#2C1810",
+            gridcolor="rgba(44,24,16,0.1)",
         ),
         yaxis=dict(
-            tickfont=dict(family="IBM Plex Mono", size=10, color=RH_TEXT),
+            tickfont=dict(family="IBM Plex Mono", size=11, color="#2C1810"),
             autorange="reversed",
+            title_font=dict(color="#2C1810"),
+            linecolor="#2C1810",
+            gridcolor="rgba(44,24,16,0.1)",
         ),
     )
     st.plotly_chart(fig, use_container_width=True)
@@ -1001,9 +1061,7 @@ def render_qoq_heatmap():
     </div>""", unsafe_allow_html=True)
 
     latest_data = (
-        df[[latest_q]]
-        .dropna()
-        .reset_index()
+        df[[latest_q]].dropna().reset_index()
         .rename(columns={latest_q: "QoQ %", "Index": "Index"})
         .sort_values("QoQ %", ascending=False)
     )
@@ -1015,8 +1073,7 @@ def render_qoq_heatmap():
                     unsafe_allow_html=True)
         html = "<table class='val-table'><thead><tr><th>Index</th><th>QoQ %</th></tr></thead><tbody>"
         for _, r in latest_data.head(5).iterrows():
-            html += (f"<tr><td>{r['Index']}</td>"
-                     f"<td><span class='green'>{r['QoQ %']:+.1f}%</span></td></tr>")
+            html += f"<tr><td>{r['Index']}</td><td><span class='green'>{r['QoQ %']:+.1f}%</span></td></tr>"
         html += "</tbody></table>"
         st.markdown(html, unsafe_allow_html=True)
 
@@ -1026,12 +1083,11 @@ def render_qoq_heatmap():
                     unsafe_allow_html=True)
         html = "<table class='val-table'><thead><tr><th>Index</th><th>QoQ %</th></tr></thead><tbody>"
         for _, r in latest_data.tail(5).iloc[::-1].iterrows():
-            html += (f"<tr><td>{r['Index']}</td>"
-                     f"<td><span class='red'>{r['QoQ %']:+.1f}%</span></td></tr>")
+            html += f"<tr><td>{r['Index']}</td><td><span class='red'>{r['QoQ %']:+.1f}%</span></td></tr>"
         html += "</tbody></table>"
         st.markdown(html, unsafe_allow_html=True)
 
-    # ── Trend table: show all 8 quarters side by side ──
+    # ── Full 8-quarter table ──
     st.markdown(f"""<div class='section-title'>
         <span class='accent'>Table</span> &nbsp; Full 8-Quarter Grid ({metric_label})
     </div>""", unsafe_allow_html=True)
@@ -1046,6 +1102,8 @@ def render_qoq_heatmap():
             v = row.get(q)
             if v is None or (isinstance(v, float) and pd.isna(v)):
                 html += "<td><span class='muted'>—</span></td>"
+            elif abs(v) > CLAMP:
+                html += f"<td><span style='color:#7B2FBE;font-weight:600;'>⚡{v:+.0f}%</span></td>"
             else:
                 cls = "green" if v > 0 else "red"
                 html += f"<td><span class='{cls}'>{v:+.1f}%</span></td>"
@@ -1124,13 +1182,15 @@ def render_sector_rotation():
         ],
         zmid=0,
         hovertemplate="<b>%{y}</b><br>Quarter: %{x}<br>P/E change: %{z:+.1f}%<extra></extra>",
-        colorbar=dict(title="P/E Δ%", tickfont=dict(color=RH_MUTED, family="IBM Plex Mono", size=9)),
+        colorbar=dict(title="P/E Δ%", tickfont=dict(color="#2C1810", family="IBM Plex Mono", size=10)),
     ))
     fig.update_layout(
         plot_bgcolor=RH_BG, paper_bgcolor=RH_SURFACE2,
-        font=dict(family="IBM Plex Mono", color=RH_MUTED, size=9),
+        font=dict(family="IBM Plex Mono", color="#2C1810", size=10),
         height=max(500, 22 * len(rows)),
         margin=dict(l=140, r=40, t=20, b=40),
+        xaxis=dict(tickfont=dict(family="IBM Plex Mono", size=11, color="#2C1810")),
+        yaxis=dict(tickfont=dict(family="IBM Plex Mono", size=11, color="#2C1810")),
     )
     st.plotly_chart(fig, use_container_width=True)
 
