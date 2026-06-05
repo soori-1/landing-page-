@@ -31,6 +31,7 @@ def apply_theme():
     @import url('https://fonts.googleapis.com/css2?family=Fraunces:wght@700;900&family=IBM+Plex+Mono:wght@300;400;500&display=swap');
 
     #MainMenu, footer {{ visibility: hidden; }}
+    [data-testid="stAppDeployButton"] {{ display: none !important; }}
 
     [data-testid="stHeader"] {{
         background: transparent !important;

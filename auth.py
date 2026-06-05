@@ -13,13 +13,10 @@ _LOGIN_CSS = """
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Fraunces:wght@700;900&family=IBM+Plex+Mono:wght@300;400;500&display=swap');
 
-.rh-login-wrap {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 72vh;
-    padding: 40px 16px;
+/* push the login card into the vertical centre of the viewport */
+section[data-testid="stMain"] > div:first-child {
+    padding-top: 12vh !important;
+    padding-bottom: 6vh !important;
 }
 
 .rh-login-card {
@@ -84,7 +81,21 @@ _LOGIN_CSS = """
     opacity: 0.7;
 }
 
-/* Override Streamlit form inputs inside login */
+/* ── Form: match card width ── */
+div[data-testid="stForm"] {
+    width: 100% !important;
+    max-width: 420px !important;
+    box-sizing: border-box !important;
+}
+
+div[data-testid="stForm"] .stTextInput,
+div[data-testid="stForm"] .stTextInput > div,
+div[data-testid="stForm"] .stTextInput > div > div {
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+/* Label */
 div[data-testid="stForm"] .stTextInput > label {
     font-family: 'IBM Plex Mono', monospace !important;
     font-size: 9px !important;
@@ -93,39 +104,79 @@ div[data-testid="stForm"] .stTextInput > label {
     color: #8B6A4A !important;
 }
 
+/* Input — text must be dark/readable regardless of app theme */
 div[data-testid="stForm"] .stTextInput > div > div > input {
+    width: 100% !important;
+    box-sizing: border-box !important;
     background: #F5ECD7 !important;
     border: 1px solid rgba(139,26,26,0.25) !important;
     border-radius: 0 !important;
-    color: #2C1810 !important;
+    color: #1A1A1A !important;
+    -webkit-text-fill-color: #1A1A1A !important;
     font-family: 'IBM Plex Mono', monospace !important;
     font-size: 13px !important;
     padding: 10px 14px !important;
 }
 
+div[data-testid="stForm"] .stTextInput > div > div > input::placeholder {
+    color: #9B8B7A !important;
+    -webkit-text-fill-color: #9B8B7A !important;
+}
+
 div[data-testid="stForm"] .stTextInput > div > div > input:focus {
     border-color: #8B1A1A !important;
     box-shadow: 0 0 0 1px #8B1A1A !important;
+    outline: none !important;
+    color: #1A1A1A !important;
+    -webkit-text-fill-color: #1A1A1A !important;
+}
+
+/* Button — centred, auto width, always white text */
+div[data-testid="stForm"] .stButton {
+    display: flex !important;
+    justify-content: center !important;
 }
 
 div[data-testid="stForm"] .stButton > button {
     background: #8B1A1A !important;
     color: #FFFFFF !important;
+    -webkit-text-fill-color: #FFFFFF !important;
     border: none !important;
     font-family: 'IBM Plex Mono', monospace !important;
     font-size: 11px !important;
     font-weight: 600 !important;
     letter-spacing: 0.18em !important;
     text-transform: uppercase !important;
-    padding: 10px 24px !important;
+    padding: 10px 40px !important;
     border-radius: 0 !important;
     height: 42px !important;
-    width: 100% !important;
+    width: auto !important;
+    min-width: 180px !important;
+    box-sizing: border-box !important;
     transition: background 0.15s ease !important;
 }
 
 div[data-testid="stForm"] .stButton > button:hover {
     background: #6B1010 !important;
+    color: #FFFFFF !important;
+    -webkit-text-fill-color: #FFFFFF !important;
+}
+
+/* ── Responsive: collapse side columns on narrow screens ── */
+@media (max-width: 768px) {
+    div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:first-child,
+    div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:last-child {
+        display: none !important;
+    }
+    div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-child(2) {
+        width: 100% !important;
+        min-width: 100% !important;
+        flex: 1 1 100% !important;
+        padding: 0 16px !important;
+    }
+    .rh-login-card {
+        padding: 32px 24px 28px !important;
+    }
 }
 </style>
 """
@@ -144,7 +195,6 @@ def require_login() -> None:
     )
 
     st.markdown(_LOGIN_CSS, unsafe_allow_html=True)
-    st.markdown('<div class="rh-login-wrap">', unsafe_allow_html=True)
 
     with st.container():
         _, mid, _ = st.columns([1, 1.6, 1])
@@ -185,7 +235,6 @@ def require_login() -> None:
                 unsafe_allow_html=True,
             )
 
-    st.markdown("</div>", unsafe_allow_html=True)
     st.stop()
 
 
